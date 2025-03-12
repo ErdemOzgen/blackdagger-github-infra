@@ -1,0 +1,69 @@
+name: ZAP Baseline Scan Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      website:
+        description: 'Website URL to scan'
+        required: true
+        default: 'https://test.site/'
+      scantype:
+        description: 'Scan type (e.g., zap-baseline.py)'
+        required: true
+        default: 'zap-baseline.py'
+      report:
+        description: 'Report file name'
+        required: true
+        default: 'owasp-zap-report.html'
+
+jobs:
+  scan:
+    name: Run ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    container:
+      image: owasp/zap2docker-stable
+    continue-on-error: true
+    env:
+      website: ${{ github.event.inputs.website }}
+      scantype: ${{ github.event.inputs.scantype }}
+      report: ${{ github.event.inputs.report }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Create Working Directory
+        run: mkdir -p /zap/wrk
+
+      - name: Run ZAP Baseline Scan
+        run: |
+          pwd
+          ls
+          $scantype -t $website -m 1 -d -I -r $report
+          cp /zap/wrk/$report .
+        shell: bash
+
+      - name: Upload ZAP Report Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-report
+          path: ${{ env.report }}
+          retention-days: 1
+
+  upload:
+    name: Artifact Upload Phase
+    needs: scan
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
+    if: always()
+    steps:
+      - name: Download ZAP Report Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: zap-report
+
+      - name: List Files
+        run: ls
