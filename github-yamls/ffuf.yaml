@@ -1,0 +1,51 @@
+name: FFUF - Directory Scan
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for FFUF scanning'
+        required: true
+        default: 'example.com'
+      rate_limit:
+        description: 'Rate limit for FFUF (default: 0)'
+        required: false
+        default: '0'
+
+jobs:
+  ffuf-dir:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install FFUF if not installed
+        run: |
+          if [ ! -f "./bin/ffuf" ]; then
+            echo "FFUF binary not found. Installing FFUF..."
+            mkdir -p ./bin
+            go install github.com/ffuf/ffuf/v2@latest
+            cp "$(go env GOPATH)/bin/ffuf" ./bin/ffuf
+          else
+            echo "FFUF is already installed."
+          fi
+        shell: bash
+
+      - name: Run FFUF Directory Scan
+        run: |
+          ./bin/ffuf -o "${PWD}/${{ github.event.inputs.target }}-fuff-all.json" -t 1 -p 0.5 -rate ${{ github.event.inputs.rate_limit }} -w raft-medium-directories.txt -recursion -recursion-depth 2 -u "https://${{ github.event.inputs.target }}/FUZZ" -mc 401,402,403,200,201,500,501,502,300,301,302,530
+        shell: bash
+        continue-on-error: true
+
+      - name: Upload FFUF JSON Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ffuf-json
+          path: |
+            *-fuff-all.json
+          retention-days: 1

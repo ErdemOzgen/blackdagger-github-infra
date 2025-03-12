@@ -1,0 +1,50 @@
+name: Certgrabber - Certificate Collection
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain to grab certificates'
+        required: true
+        default: 'example.com'
+
+jobs:
+  certgrabber:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bullseye-slim
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -yqq openssl
+
+      - name: Create certs directory
+        run: mkdir -p certs
+
+      - name: Run certgrabber to collect certificates
+        run: |
+          # If the certgrabber binary is not available in ./bin,
+          # you may need to install it here.
+          ./bin/certgrabber -c -o "${PWD}/certs/${{ github.event.inputs.target }}.x509" "${{ github.event.inputs.target }}:443"
+        shell: bash
+
+      - name: Convert certificates to text format
+        run: |
+          for cert in certs/*.x509; do
+            openssl x509 -in "$cert" -text > "$cert.txt"
+          done
+        shell: bash
+
+      - name: Upload Certificates Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: certgrabber-artifacts
+          path: certs/*
+          retention-days: 1

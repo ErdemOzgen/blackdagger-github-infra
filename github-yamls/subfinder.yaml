@@ -1,0 +1,46 @@
+name: Subfinder - Passive Subdomain Discovery
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for Subfinder'
+        required: true
+        default: 'example.com'
+
+jobs:
+  subfinder:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Subfinder if not installed
+        run: |
+          if [ ! -f "./bin/subfinder" ]; then
+            echo "Subfinder binary not found. Installing subfinder..."
+            mkdir -p ./bin
+            go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+            cp "$(go env GOPATH)/bin/subfinder" ./bin/subfinder
+          else
+            echo "Subfinder is already installed."
+          fi
+        shell: bash
+
+      - name: Run Subfinder
+        run: |
+          ./bin/subfinder -silent -d "${{ github.event.inputs.target }}" -o subfinder.log >/dev/null
+        shell: bash
+        continue-on-error: true
+
+      - name: Upload Subfinder Log Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: subfinder-log
+          path: subfinder.log
+          retention-days: 1
