@@ -1,0 +1,49 @@
+name: Amass - Enumeration
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain to scan'
+        required: true
+        default: 'owasp.org'
+
+jobs:
+  amass-enum:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Wordlist
+        run: |
+          mkdir -p dns_lists
+          curl -L https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt \
+            -o dns_lists/deepmagic.com-prefixes-top50000.txt
+        shell: bash
+
+      - name: Install Amass if not present
+        run: |
+          if [ ! -f "./bin/amass" ]; then
+            echo "Amass not found in ./bin. Installing..."
+            mkdir -p ./bin
+            go install -v github.com/owasp-amass/amass/v4/...@master
+            cp "$(go env GOPATH)/bin/amass" ./bin/amass
+          else
+            echo "Amass is already installed."
+          fi
+        shell: bash
+
+      - name: Run Amass Enumeration
+        shell: bash --noprofile --norc -e -o pipefail {0}
+        run: |
+          ./bin/amass enum -active -brute -v -o "amass_results_${{ github.event.inputs.target }}.txt" -d "${{ github.event.inputs.target }}" 
+
+      - name: Upload Amass Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amass-results
+          path: "amass_results_${{ github.event.inputs.target }}.txt"
+          retention-days: 1

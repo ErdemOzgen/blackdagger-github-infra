@@ -1,0 +1,43 @@
+name: Assetfinder - Subdomain Discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for Assetfinder'
+        required: true
+        default: 'example.com'
+
+jobs:
+  assetfinder:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Assetfinder if not installed
+        run: |
+          if [ ! -f "./bin/assetfinder" ]; then
+            echo "Assetfinder binary not found. Installing assetfinder..."
+            mkdir -p ./bin
+            go install github.com/tomnomnom/assetfinder@latest
+            cp "$(go env GOPATH)/bin/assetfinder" ./bin/assetfinder
+          else
+            echo "Assetfinder is already installed."
+          fi
+        shell: bash
+
+      - name: Run Assetfinder
+        run: |
+          (./bin/assetfinder -subs-only "${{ github.event.inputs.target }}" || true) > assetfinder.log 2>&1
+        shell: bash
+        continue-on-error: true
+
+      - name: Upload Assetfinder Log Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: assetfinder-log
+          path: assetfinder.log
+          retention-days: 1

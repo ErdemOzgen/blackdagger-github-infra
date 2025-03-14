@@ -1,0 +1,46 @@
+name: BBot Scanning
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain(s) for BBot scanning'
+        required: true
+        default: 'example.com'
+
+jobs:
+  bbot-all:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container:
+      image: debian:bullseye-slim
+    env:
+      # Use GitHub repository name as the project name (similar to CI_PROJECT_NAME)
+      PROJECT_NAME: ${{ github.event.repository.name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -yqq python pip
+
+      - name: Install bbot
+        run: pip install bbot
+
+      - name: Create output directory for bbot
+        run: mkdir -p bbot/
+
+      - name: Run BBot Scan
+        run: |
+          # Use the provided "target" input for scanning.
+          bbot -t "${{ github.event.inputs.target }}" -f subdomain-enum email-enum cloud-enum web-basic -m gowitness nuclei --allow-deadly --output-dir bbot/ --name "$PROJECT_NAME" --output-module stdout csv json
+        shell: bash
+
+      - name: Upload BBot Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PROJECT_NAME }}-bbot-certs
+          path: bbot/*
+          retention-days: 1

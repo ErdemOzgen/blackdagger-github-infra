@@ -1,0 +1,42 @@
+name: GAU - GetAllURLs
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for GAU scan'
+        required: true
+        default: 'example.com'
+
+jobs:
+  gau:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install GAU if not installed
+        run: |
+          if [ ! -f "./bin/gau" ]; then
+            echo "GAU binary not found. Installing GAU..."
+            mkdir -p ./bin
+            go install github.com/lc/gau/v2/cmd/gau@latest
+            cp "$(go env GOPATH)/bin/gau" ./bin/gau
+          else
+            echo "GAU is already installed."
+          fi
+        shell: bash
+
+      - name: Run GAU for target domain
+        run: |
+          echo "${{ github.event.inputs.target }}" | ./bin/gau --blacklist png,jpg,gif,ttf,woff --o "${PWD}/gau-urls.txt" --verbose --threads 3
+        shell: bash
+
+      - name: Upload GAU URLs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gau-urls
+          path: gau-urls.txt
+          retention-days: 1

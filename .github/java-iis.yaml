@@ -1,0 +1,33 @@
+name: IIS Short Name Scanner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  iis_shortname_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'  # You can adjust this to another Java distribution if needed
+        java-version: '17'       # Specify Java 17 to support the required class version
+
+    - name: Install IIS Short Name Scanner
+      run: |
+        wget https://github.com/irsdl/IIS-ShortName-Scanner/raw/master/release/iis_shortname_scanner.jar -O iis_shortname_scanner.jar
+        wget https://github.com/irsdl/IIS-ShortName-Scanner/raw/master/release/config.xml -O config.xml
+
+    - name: Run IIS Short Name Scanner
+      run: |
+        java -jar iis_shortname_scanner.jar -u egm.gov.tr config.xml > scan-output.log
+
+    - name: Upload Scan Output
+      uses: actions/upload-artifact@v4
+      with:
+        name: iis-shortname-scan-output
+        path: scan-output.log

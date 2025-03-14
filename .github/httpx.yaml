@@ -1,0 +1,52 @@
+name: HTTPX - HTTP Probing
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for HTTPX scan'
+        required: true
+        default: 'example.com'
+      rate_limit:
+        description: 'Rate limit for HTTPX (default: 0)'
+        required: false
+        default: '0'
+
+jobs:
+  httpx:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare target file
+        run: |
+          echo "${{ github.event.inputs.target }}" > domains.txt
+        shell: bash
+
+      - name: Install HTTPX if not installed
+        run: |
+          if [ ! -f "./bin/httpx" ]; then
+            echo "HTTPX binary not found. Installing HTTPX..."
+            mkdir -p ./bin
+            go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+            cp "$(go env GOPATH)/bin/httpx" ./bin/httpx
+          else
+            echo "HTTPX is already installed."
+          fi
+        shell: bash
+
+      - name: Run HTTPX scan
+        run: |
+          ./bin/httpx -random-agent -ip -asn -cdn -cname -server -sc -title -location -rl ${{ github.event.inputs.rate_limit }} -list ${PWD}/domains.txt -o ${PWD}/httpx.log -silent >/dev/null
+        shell: bash
+        continue-on-error: true
+
+      - name: Upload HTTPX log Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: httpx-log
+          path: httpx.log
+          retention-days: 1

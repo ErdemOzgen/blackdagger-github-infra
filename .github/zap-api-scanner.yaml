@@ -1,0 +1,47 @@
+name: ZAP API Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Target domain for ZAP API Scan'
+        required: true
+        default: 'example.com'
+      api_base:
+        description: 'API base path (e.g., api, v1)'
+        required: true
+        default: 'api'
+      api_type:
+        description: 'API type (e.g., openapi, swagger)'
+        required: true
+        default: 'openapi'
+
+jobs:
+  zap-api-scan:
+    if: ${{ github.event.inputs.api_base != '' && github.event.inputs.api_type != '' }}
+    runs-on: ubuntu-latest
+    container:
+      image: owasp/zap2docker-weekly
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create working directory for ZAP
+        run: mkdir -p /zap/wrk
+        shell: bash
+
+      - name: Run ZAP API Scan
+        run: |
+          zap-api-scan.py -t "https://${{ github.event.inputs.domain }}/${{ github.event.inputs.api_base }}" \
+          -f "${{ github.event.inputs.api_type }}" \
+          -w "/zap/wrk/${{ github.event.inputs.domain }}-report.md" \
+          -x "/zap/wrk/${{ github.event.inputs.domain }}-report.xml" \
+          -r "/zap/wrk/${{ github.event.inputs.domain }}-report.html" -d
+        shell: bash
+
+      - name: Upload ZAP API Scan Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ github.event.inputs.domain }}:zap_api_scan"
+          path: /zap/wrk/${{ github.event.inputs.domain }}-report.*
+          retention-days: 1

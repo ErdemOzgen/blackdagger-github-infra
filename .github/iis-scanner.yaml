@@ -1,0 +1,35 @@
+name: IIS Shortname DAST Scan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  iis_shortname_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the IIS Shortname Scanner repo
+      uses: actions/checkout@v2
+      with:
+        repository: lijiejie/IIS_shortname_Scanner
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt || true  # No explicit requirements file, so this is optional
+
+    - name: Run IIS Shortname Scanner
+      run: |
+        python iis_shortname_scan.py https://egm.gov.tr > scan-output.log
+      # Replace https://mcens.tcmb.gov.tr with the actual target URL you want to scan
+
+    - name: Upload scan output
+      uses: actions/upload-artifact@v4
+      with:
+        name: iis-shortname-scan-output
+        path: scan-output.log
