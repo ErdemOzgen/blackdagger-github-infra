@@ -1,0 +1,51 @@
+name: Nuclei - Vulnerability Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target domain for Nuclei Scan'
+        required: true
+        default: 'example.com'
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
+
+      - name: IP
+        run: curl ipinfo.io
+
+      - name: SubFinder Action
+        uses: projectdiscovery/subfinder-action@v1.0.0
+        with:
+          # Domain to run subdomain enumeration
+          domain: cloudflare.com
+          # List of domains to run subdomain enumeration
+          #list: # optional, default is 
+          # Config file to use for subdomain enumeration
+          #config: # optional, default is 
+          # File to save output result
+          output: subs.txt
+          # Additional subfinder CLI flags to use
+          #flags: # optional
+          # Filter subdomains with no DNS records
+          #active: # optional
+          # Format to save of output file
+          #json: # optional
+
+      - name: Nuclei - Vulnerability Scan
+        uses: projectdiscovery/nuclei-action@v2.0.1
+        with:
+          urls: subs.txt
+          templates: technologies
+
+      - name: GitHub Workflow artifacts
+        uses: actions/upload-artifact@v4  # Updated version
+        with:
+          name: nuclei.log
+          path: nuclei.log

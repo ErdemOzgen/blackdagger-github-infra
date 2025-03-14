@@ -1,9 +1,6 @@
 name: ZAP Baseline Scan Workflow
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       website:
@@ -32,7 +29,7 @@ jobs:
       report: ${{ github.event.inputs.report }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create Working Directory
         run: mkdir -p /zap/wrk
@@ -46,7 +43,7 @@ jobs:
         shell: bash
 
       - name: Upload ZAP Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: ${{ env.report }}

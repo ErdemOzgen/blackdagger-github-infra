@@ -1,9 +1,6 @@
 name: BBot Scanning
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       target:
@@ -22,7 +19,7 @@ jobs:
       PROJECT_NAME: ${{ github.event.repository.name }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install system dependencies
         run: |
@@ -38,11 +35,11 @@ jobs:
       - name: Run BBot Scan
         run: |
           # Use the provided "target" input for scanning.
-          bbot -t "${{ github.event.inputs.target }}" -f subdomain-enum email-enum cloud-enum web-basic -m naabu gowitness nuclei --allow-deadly --output-dir bbot/ --name "$PROJECT_NAME" --output-module human csv json neo4j
+          bbot -t "${{ github.event.inputs.target }}" -f subdomain-enum email-enum cloud-enum web-basic -m gowitness nuclei --allow-deadly --output-dir bbot/ --name "$PROJECT_NAME" --output-module stdout csv json
         shell: bash
 
       - name: Upload BBot Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PROJECT_NAME }}-bbot-certs
           path: bbot/*

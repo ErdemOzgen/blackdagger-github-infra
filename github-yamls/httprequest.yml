@@ -1,0 +1,30 @@
+name: DAST Concurrent HTTP Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  concurrent-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install hey load testing tool
+        run: |
+          curl -Lo hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64
+          chmod +x hey
+          sudo mv hey /usr/local/bin/hey
+
+      - name: Run concurrent HTTP requests against DAST target
+        run: |
+          # Example: 1000 total requests, 50 concurrent at a time
+          hey -n 1000 -c 50 http://egm.gov.tr
+
+      - name: Run concurrent HTTPS requests against DAST target
+        run: |
+          # Example: 1000 total requests, 50 concurrent at a time
+          hey -n 1000 -c 50 https://egm.gov.tr
