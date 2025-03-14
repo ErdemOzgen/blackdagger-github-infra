@@ -1,9 +1,6 @@
 name: GAU - GetAllURLs
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       target:
@@ -18,7 +15,7 @@ jobs:
       image: golang:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install GAU if not installed
         run: |
@@ -34,11 +31,11 @@ jobs:
 
       - name: Run GAU for target domain
         run: |
-          echo "${{ github.event.inputs.target }}" | ./bin/gau --blacklist png,jpg,gif,ttf,woff --fp --o "${PWD}/gau-urls.txt" --verbose --threads 3
+          echo "${{ github.event.inputs.target }}" | ./bin/gau --blacklist png,jpg,gif,ttf,woff --o "${PWD}/gau-urls.txt" --verbose --threads 3
         shell: bash
 
       - name: Upload GAU URLs Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gau-urls
           path: gau-urls.txt

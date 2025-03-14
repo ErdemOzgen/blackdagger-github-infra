@@ -1,9 +1,6 @@
 name: Subfinder - Passive Subdomain Discovery
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       target:
@@ -18,7 +15,7 @@ jobs:
       image: golang:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Subfinder if not installed
         run: |
@@ -39,7 +36,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Subfinder Log Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: subfinder-log
           path: subfinder.log

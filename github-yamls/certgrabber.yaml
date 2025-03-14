@@ -1,9 +1,6 @@
 name: Certgrabber - Certificate Collection
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       target:
@@ -18,7 +15,7 @@ jobs:
       image: debian:bullseye-slim
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -28,6 +25,17 @@ jobs:
       - name: Create certs directory
         run: mkdir -p certs
 
+      - name: Install Certgrabber if not installed
+        run: |
+          if [ ! -f "./bin/ffuf" ]; then
+            echo "Certgrabber binary not found. Installing Certgrabber..."
+            mkdir -p ./bin
+            curl -Lo https://github.com/stavinski/certgrabber/releases/download/v1.0.4/certgrabber_1.0.4_Linux_x86_64
+            cp certgrabber_1.0.4_Linux_x86_64 ./bin/certgrabber
+            chmod +x ./bin/certgrabber
+          else
+            echo "Certgrabber is already installed."
+          fi
       - name: Run certgrabber to collect certificates
         run: |
           # If the certgrabber binary is not available in ./bin,
@@ -43,7 +51,7 @@ jobs:
         shell: bash
 
       - name: Upload Certificates Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: certgrabber-artifacts
           path: certs/*
