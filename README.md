@@ -1,4 +1,4 @@
-# BlackDagger GitHub Infra 
+# Blackdagger GitHub Infra 
 
 <p align="center">
   <img src="https://github.com/ErdemOzgen/blackdagger/blob/main/assets/images/blackdaggerReadme.png" width="500" alt="blackdagger-logo">
@@ -6,7 +6,14 @@
 
 ## Introduction
 
-BlackDagger GitHub Infra revolutionizes DAST (Dynamic Application Security Testing) by leveraging GitHub Actions runners for enhanced operational security. This guide will walk you through setting up and using the system for your security testing needs.
+Blackdagger GitHub Infra revolutionizes DAST (Dynamic Application Security Testing) by leveraging GitHub Actions runners for enhanced operational security. This guide will walk you through setting up and using the system for your security testing needs.
+
+## Why Use GitHub Runners for DAST?
+
+- **Enhanced OPSEC**: Perform scans from GitHub's trusted infrastructure
+- **Avoid Detection**: Reduce likelihood of detection by web defenses
+- **Bypass IP Blocking**: Get around IP-based blocking mechanisms
+- **Stealthy Operations**: Conduct security testing with minimal digital footprint
 
 ## Blackdagger: Cyber Workflow Automation Framework
 
@@ -26,12 +33,6 @@ The framework consist of 5 components:
 
 Each component is compatible with each other to run on **any environment, for any case and as easy, fast and effective as possible.** The framework also enables adding, removing or modifying components to add extra features for new purposes.
 
-## Why Use GitHub Runners for DAST?
-
-- **Enhanced OPSEC**: Perform scans from GitHub's trusted infrastructure
-- **Avoid Detection**: Reduce likelihood of detection by web defenses
-- **Bypass IP Blocking**: Get around IP-based blocking mechanisms
-- **Stealthy Operations**: Conduct security testing with minimal digital footprint
 
 ## Setup Instructions
 
@@ -53,9 +54,9 @@ Each component is compatible with each other to run on **any environment, for an
 6. Click "Generate token"
 7. Copy the token immediately (you won't be able to see it again)
 
-### Step 3: Configure BlackDagger Web Kit
+### Step 3: Configure Blackdagger Web Kit
 
-1. Install the [BlackDagger Web Kit](https://github.com/ErdemOzgen/blackdagger-web-kit) extension in your browser
+1. Install the [Blackdagger Web Kit](https://github.com/ErdemOzgen/blackdagger-web-kit) extension in your browser
 2. Open the Web Kit interface
 3. Navigate to the DAST settings section
 4. Fill in the required fields:
@@ -63,13 +64,13 @@ Each component is compatible with each other to run on **any environment, for an
    - **Repository Name**: Your forked repository name (typically "blackdagger-github-infra")
    - **GitHub Token**: Paste the personal access token you generated
 
-![BlackDagger Web Kit Interface](./imgs/webkit.png)
+![Blackdagger Web Kit Interface](./imgs/webkit.png)
 
-*Screenshot of the BlackDagger Web Kit (BWK) interface that allows users to execute attack YAMLs through GitHub. This web interface enables security professionals to configure and launch security tests directly from the browser while utilizing GitHub's runners in the background.*
+*Screenshot of the Blackdagger Web Kit (BWK) interface that allows users to execute attack YAMLs through GitHub. This web interface enables security professionals to configure and launch security tests directly from the browser while utilizing GitHub's runners in the background.*
 
 ### Step 4: Launch Security Tests
 
-1. From the BlackDagger Web Kit interface, browse available YAML configurations:
+1. From the Blackdagger Web Kit interface, browse available YAML configurations:
    - Subdomain enumeration tools (subfinder, assetfinder)
    - Web scanning tools (httpx, nuclei, ffuf)
    - API scanning tools (zap-api-scanner)
@@ -80,7 +81,7 @@ Each component is compatible with each other to run on **any environment, for an
 
 ![Attack Initiation Screen](./imgs/start.png)
 
-*Image showing the attack initiation screen, which confirms that a security test has been successfully launched. This interface provides confirmation that the BlackDagger system is now executing the configured test through GitHub's infrastructure.*
+*Image showing the attack initiation screen, which confirms that a security test has been successfully launched. This interface provides confirmation that the Blackdagger system is now executing the configured test through GitHub's infrastructure.*
 
 ## Available YAML Configurations
 
@@ -107,7 +108,7 @@ The repository includes numerous pre-configured YAML files for different securit
 ## Monitoring Your Scans
 
 1. Once a scan is launched, you can monitor its progress:
-   - Through the BlackDagger Web Kit interface
+   - Through the Blackdagger Web Kit interface
    - Via GitHub Actions in your forked repository
 2. Results will be available once the workflow completes
 
@@ -115,16 +116,16 @@ The repository includes numerous pre-configured YAML files for different securit
 
 ![Architecture Diagram](./imgs/arch.png)
 
-BlackDagger integrates with GitHub infrastructure to perform security testing and enumeration. This architecture enables attacks and reconnaissance to be executed through GitHub runners, providing enhanced operational security by leveraging GitHub's trusted infrastructure.
+Blackdagger integrates with GitHub infrastructure to perform security testing and enumeration. This architecture enables attacks and reconnaissance to be executed through GitHub runners, providing enhanced operational security by leveraging GitHub's trusted infrastructure.
 
 ## Additional Resources
 
-- [BlackDagger Core](https://github.com/ErdemOzgen/blackdagger)
+- [Blackdagger Core](https://github.com/ErdemOzgen/blackdagger)
 - [BlackCart Docker Container](https://github.com/ErdemOzgen/blackcart)
-- [BlackDagger Example Workflows](https://github.com/ErdemOzgen/blackdagger-default)
-- [BlackDagger DevSecOps Workflows](https://github.com/ErdemOzgen/blackdagger-devsecops)
-- [BlackDagger CART Workflows](https://github.com/ErdemOzgen/blackdagger-cart)
-- [BlackDagger Web Kit](https://github.com/ErdemOzgen/blackdagger-web-kit)
+- [Blackdagger Example Workflows](https://github.com/ErdemOzgen/blackdagger-default)
+- [Blackdagger DevSecOps Workflows](https://github.com/ErdemOzgen/blackdagger-devsecops)
+- [Blackdagger CART Workflows](https://github.com/ErdemOzgen/blackdagger-cart)
+- [Blackdagger Web Kit](https://github.com/ErdemOzgen/blackdagger-web-kit)
 
 ## Troubleshooting
 
