@@ -1,9 +1,6 @@
 name: Nuclei - Vulnerability Scan
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       target:

@@ -6,9 +6,20 @@
 
 ### GitHub Runner-Powered DAST Scanning
 
-Blackdagger-github-infra revolutionizes traditional DAST by leveraging GitHub Actions runners, significantly enhancing operational security (OPSEC). This method allows penetration testers and Red Team operators to perform scans and execute simulated attacks from GitHub's trusted infrastructure, thereby reducing the likelihood of detection by web defenses and IP-based blocking mechanisms. By simply forking the provided default GitHub repository and configuring your GitHub token within the BPTK DAST settings, you ensure stealthy, uninterrupted, and effective security testing with minimized risk of alerting defensive measures or leaving traceable digital footprints.
+Blackdagger-github-infra revolutionizes traditional DAST by leveraging GitHub Actions runners, significantly enhancing operational security (OPSEC). This method allows penetration testers and Red Team operators to perform scans and execute simulated attacks from GitHub's trusted infrastructure, thereby reducing the likelihood of detection by web defenses and IP-based blocking mechanisms. By simply forking the provided default GitHub repository and configuring your GitHub token within the Blackdagger Web Kit (BWK) DAST settings, you ensure stealthy, uninterrupted, and effective security testing with minimized risk of alerting defensive measures or leaving traceable digital footprints.
 
 ![](./imgs/arch.png)
+
+The architecture diagram illustrates how BlackDagger integrates with GitHub infrastructure to perform security testing and enumeration. This architecture enables attacks and reconnaissance to be executed through GitHub runners, providing enhanced operational security by leveraging GitHub's trusted infrastructure.
+
+
+![](./imgs/webkit.png)
+
+Screenshot of the BlackDagger Web Kit (BWK) interface that allows users to execute attack YAMLs through GitHub. This web interface enables security professionals to configure and launch security tests directly from the browser while utilizing GitHub's runners in the background.
+
+![](./imgs/start.png)
+
+Image showing the attack initiation screen, which confirms that a security test has been successfully launched. This interface provides confirmation that the BlackDagger system is now executing the configured test through GitHub's infrastructure.
 
 
 # Blackdagger: Cyber Workflow Automation Framework
