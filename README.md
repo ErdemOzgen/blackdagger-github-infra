@@ -1,8 +1,9 @@
 # Blackdagger GitHub Infra 
 
 <p align="center">
-  <img src="https://github.com/ErdemOzgen/blackdagger/blob/main/assets/images/blackdaggerReadme.png" width="500" alt="blackdagger-logo">
-</p>
+   <img src="./imgs/github-infra.png" width="300" alt="github-infra-logo">
+   <img src="./imgs/blackdagger.png" width="300" alt="blackdagger-logo">
+ </p>
 
 ## Introduction
 
