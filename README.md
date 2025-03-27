@@ -42,6 +42,7 @@ Each component is compatible with each other to run on **any environment, for an
 1. Visit the [blackdagger-github-infra](https://github.com/ErdemOzgen/blackdagger-github-infra) GitHub repository
 2. Click the "Fork" button in the upper right corner
 3. Wait for the repository to be forked to your account
+4. After the repository is forked, go to "Actions" tab and enable workflows
 
 ### Step 2: Generate a GitHub Personal Access Token
 
